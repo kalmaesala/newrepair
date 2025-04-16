@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز إدارة تفعيل أداة طرق الدفع فيسبوك</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .religious-header {
+            text-align: center;
+            color: #4267B2;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #4267B2;
+            font-size: 24px;
+            margin: 0;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            direction: ltr;
+            text-align: center;
+        }
+        textarea {
+            min-height: 100px;
+            text-align: left;
+            font-family: monospace;
+            direction: ltr;
+            resize: vertical;
+        }
+        button {
+            background-color: #4267B2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #365899;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f7f7f7;
+            border-radius: 4px;
+            display: none;
+        }
+        .serial {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #e9f5ff;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px dashed #4267B2;
+            direction: ltr;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+        }
+        .copy-btn {
+            padding: 5px 10px;
+            background-color: #42b72a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: auto;
+            display: inline-block;
+        }
+        .instructions {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff9e6;
+            border-left: 4px solid #ffcc00;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom-color: white;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .activation-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .activation-list th, .activation-list td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .activation-list th {
+            background-color: #f2f2f2;
+        }
+        .activation-list tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .action-btn {
+            background-color: #ff4d4d;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .success-message {
+            padding: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .error-message {
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+        .button-row button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="religious-header">صلوا على رسول الله ﷺ</div>
+            <h1>مركز إدارة تفعيل أداة طرق الدفع فيسبوك</h1>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="create">إنشاء تفعيل جديد</div>
+            <div class="tab" data-tab="manage">إدارة التفعيلات</div>
+        </div>
+        
+        <!-- تبويب إنشاء تفعيل جديد -->
+        <div class="tab-content active" id="create-tab">
+            <div class="input-group">
+                <label for="hwid">معرف الجهاز (Hardware ID):</label>
+                <input type="text" id="hwid" placeholder="أدخل معرف الجهاز من المستخدم" maxlength="32">
+            </div>
+            
+            <div class="input-group">
+                <label for="user-name">اسم المستخدم (اختياري):</label>
+                <input type="text" id="user-name" placeholder="اكتب اسم أو وصف للمستخدم للتذكرة">
+            </div>
+            
+            <button id="generate-btn">إنشاء كود التفعيل</button>
+            
+            <div id="result" class="result">
+                <h3>كود التفعيل الخاص بالجهاز:</h3>
+                <div id="serial-display" class="serial"></div>
+                <div class="button-row">
+                    <button id="copy-btn" class="copy-btn">نسخ الكود</button>
+                    <button id="save-activation-btn" class="copy-btn" style="background-color: #4267B2;">حفظ في قائمة التفعيلات</button>
+                </div>
+                
+                <div class="instructions">
+                    <strong>تعليمات:</strong>
+                    <ol>
+                        <li>أرسل كود التفعيل هذا إلى المستخدم.</li>
+                        <li>يجب على المستخدم إدخال هذا الكود بالضبط في أداة التفعيل على جهازه.</li>
+                        <li>هذا الكود صالح فقط للجهاز الذي تم إنشاؤه له، ولا يمكن استخدامه على أجهزة أخرى.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب إدارة التفعيلات -->
+        <div class="tab-content" id="manage-tab">
+            <div class="success-message" id="manage-success">تم تنفيذ العملية بنجاح</div>
+            
+            <div class="button-row">
+                <button id="export-activations-btn">تصدير التفعيلات (JSON)</button>
+                <button id="import-activations-btn">استيراد التفعيلات</button>
+                <button id="clear-activations-btn" style="background-color: #d9534f;">مسح كافة التفعيلات</button>
+            </div>
+            
+            <div style="display: none" id="import-container">
+                <div class="input-group">
+                    <label for="import-json">الصق محتوى JSON للتفعيلات:</label>
+                    <textarea id="import-json" placeholder='{"activations":[...]}' rows="5"></textarea>
+                </div>
+                <div class="button-row">
+                    <button id="do-import-btn">استيراد</button>
+                    <button id="cancel-import-btn" style="background-color: #6c757d;">إلغاء</button>
+                </div>
+            </div>
+            
+            <div id="activations-container">
+                <h3>التفعيلات الحالية (<span id="activation-count">0</span>):</h3>
+                <table class="activation-list" id="activations-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>معرف الجهاز</th>
+                            <th>كود التفعيل</th>
+                            <th>اسم المستخدم</th>
+                            <th>تاريخ التفعيل</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activations-list">
+                        <tr>
+                            <td colspan="6">لا توجد تفعيلات حالياً.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label for="activation-json">محتوى ملف التفعيلات (JSON):</label>
+                <textarea id="activation-json" placeholder='{"activations":[]}' readonly></textarea>
+                <span class="note">يمكنك نسخ هذا المحتوى واحتفظ به كنسخة احتياطية من التفعيلات</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © Copyright by AboKarMa & KarLa
+        </div>
+    </div>
+    
+    <script>
+        // بيانات التفعيلات
+        let activations = [];
+        
+        // تحميل الإعدادات المحفوظة
+        function loadSavedSettings() {
+            const savedActivations = localStorage.getItem('fb_payment_tool_activations');
+            if (savedActivations) {
+                try {
+                    activations = JSON.parse(savedActivations);
+                    updateActivationsList();
+                } catch (e) {
+                    console.error('خطأ في تحميل التفعيلات:', e);
+                    activations = [];
+                }
+            }
+        }
+        
+        // التبديل بين التبويبات
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // تحديث التبويب النشط
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // تحديث المحتوى النشط
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId + '-tab').classList.add('active');
+                
+                // تحديث محتوى JSON عند الانتقال لتبويب الإدارة
+                if (tabId === 'manage') {
+                    updateJsonContent();
+                }
+            });
+        });
+        
+        // إنشاء كود التفعيل
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            const hwid = document.getElementById('hwid').value.trim();
+            
+            if (!hwid || hwid.length !== 32) {
+                alert('يرجى إدخال معرف جهاز صالح (32 حرف)');
+                return;
+            }
+            
+            try {
+                // استخراج جزء من معرف الجهاز للسريال
+                const hwidPart = hwid.substring(0, 8);
+                
+                // إنشاء التوقيع
+                const signature = btoa(hwidPart + 'AK-MA').substring(0, 8);
+                
+                // إنشاء السريال الكامل
+                const serial = hwidPart + signature;
+                
+                // عرض السريال
+                document.getElementById('serial-display').textContent = serial;
+                document.getElementById('result').style.display = 'block';
+                
+            } catch (e) {
+                alert('حدث خطأ أثناء إنشاء الكود: ' + e.message);
+            }
+        });
+        
+        // نسخ كود التفعيل
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const serialText = document.getElementById('serial-display').textContent;
+            
+            // نسخ النص إلى الحافظة
+            const tempInput = document.createElement('textarea');
+            tempInput.value = serialText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // تغيير نص الزر مؤقتًا للإشارة إلى نجاح النسخ
+            const button = document.getElementById('copy-btn');
+            const originalText = button.textContent;
+            button.textContent = 'تم النسخ!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        });
+        
+        // حفظ التفعيل في القائمة المحلية
+        document.getElementById('save-activation-btn').addEventListener('click', function() {
+            const hwid = document.getElementById('hwid').value.trim();
+            const serial = document.getElementById('serial-display').textContent;
+            const userName = document.getElementById('user-name').value.trim() || 'غير محدد';
+            
+            if (!serial) {
+                alert('يرجى إنشاء كود تفعيل أولاً');
+                return;
+            }
+            
+            // التحقق من وجود تفعيل سابق لنفس الجهاز
+            const existingIndex = activations.findIndex(a => a.hwid === hwid);
+            
+            if (existingIndex !== -1) {
+                if (!confirm('يوجد تفعيل سابق لهذا الجهاز. هل ترغب باستبداله؟')) {
+                    return;
+                }
+                activations.splice(existingIndex, 1);
+            }
+            
+            // إضافة التفعيل الجديد
+            activations.push({
+                hwid: hwid,
+                serial: serial,
+                userName: userName,
+                date: new Date().toISOString().split('T')[0]
+            });
+            
+            // حفظ التفعيلات محلياً
+            localStorage.setItem('fb_payment_tool_activations', JSON.stringify(activations));
+            
+            // تحديث جدول التفعيلات
+            updateActivationsList();
+            
+            alert('تم حفظ التفعيل بنجاح!');
+            
+            // التبديل إلى تبويب إدارة التفعيلات
+            document.querySelector('.tab[data-tab="manage"]').click();
+        });
+        
+        // تصدير التفعيلات
+        document.getElementById('export-activations-btn').addEventListener('click', function() {
+            const jsonContent = JSON.stringify({ activations: activations }, null, 2);
+            
+            try {
+                // إنشاء ملف للتنزيل
+                const blob = new Blob([jsonContent], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fb_payment_tool_activations.json';
+                document.body.appendChild(a);
+                a.click();
+                
+                // تنظيف
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 0);
+                
+                showSuccess('manage-success', 'تم تصدير التفعيلات بنجاح!');
+            } catch (e) {
+                alert('حدث خطأ أثناء تصدير التفعيلات: ' + e.message);
+            }
+        });
+        
+        // عرض/إخفاء نموذج الاستيراد
+        document.getElementById('import-activations-btn').addEventListener('click', function() {
+            document.getElementById('import-container').style.display = 'block';
+        });
+        
+        // إلغاء الاستيراد
+        document.getElementById('cancel-import-btn').addEventListener('click', function() {
+            document.getElementById('import-container').style.display = 'none';
+            document.getElementById('import-json').value = '';
+        });
+        
+        // استيراد التفعيلات
+        document.getElementById('do-import-btn').addEventListener('click', function() {
+            const jsonText = document.getElementById('import-json').value.trim();
+            
+            if (!jsonText) {
+                alert('يرجى إدخال بيانات JSON للاستيراد');
+                return;
+            }
+            
+            try {
+                const importedData = JSON.parse(jsonText);
+                
+                if (!Array.isArray(importedData.activations)) {
+                    throw new Error('تنسيق البيانات غير صحيح. يجب أن تحتوي على مصفوفة "activations"');
+                }
+                
+                // الاستيراد
+                const importCount = importedData.activations.length;
+                
+                if (importCount === 0) {
+                    alert('لا توجد تفعيلات في البيانات المستوردة');
+                    return;
+                }
+                
+                if (activations.length > 0 && !confirm(`سيتم استبدال ${activations.length} تفعيل موجود بـ ${importCount} تفعيل جديد. هل تريد المتابعة؟`)) {
+                    return;
+                }
+                
+                activations = importedData.activations;
+                localStorage.setItem('fb_payment_tool_activations', JSON.stringify(activations));
+                updateActivationsList();
+                
+                // إخفاء نموذج الاستيراد
+                document.getElementById('import-container').style.display = 'none';
+                document.getElementById('import-json').value = '';
+                
+                showSuccess('manage-success', `تم استيراد ${importCount} تفعيل بنجاح!`);
+                
+            } catch (e) {
+                alert('حدث خطأ أثناء استيراد التفعيلات: ' + e.message);
+            }
+        });
+        
+        // مسح كافة التفعيلات
+        document.getElementById('clear-activations-btn').addEventListener('click', function() {
+            if (activations.length === 0) {
+                alert('لا توجد تفعيلات للمسح');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من رغبتك في مسح ${activations.length} تفعيل؟ هذا الإجراء لا يمكن التراجع عنه.`)) {
+                activations = [];
+                localStorage.setItem('fb_payment_tool_activations', JSON.stringify(activations));
+                updateActivationsList();
+                showSuccess('manage-success', 'تم مسح كافة التفعيلات بنجاح!');
+            }
+        });
+        
+        // تحديث قائمة التفعيلات
+        function updateActivationsList() {
+            const tbody = document.getElementById('activations-list');
+            tbody.innerHTML = '';
+            
+            if (activations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">لا توجد تفعيلات حالياً</td></tr>';
+                document.getElementById('activation-count').textContent = '0';
+                return;
+            }
+            
+            document.getElementById('activation-count').textContent = activations.length;
+            
+            activations.forEach((activation, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${activation.hwid.substring(0, 8)}...${activation.hwid.substring(activation.hwid.length - 4)}</td>
+                    <td>${activation.serial}</td>
+                    <td>${activation.userName}</td>
+                    <td>${activation.date || 'غير محدد'}</td>
+                    <td>
+                        <button class="action-btn" data-index="${index}">حذف</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // إضافة استماع لأزرار الحذف
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    if (confirm('هل أنت متأكد من حذف هذا التفعيل؟')) {
+                        activations.splice(index, 1);
+                        localStorage.setItem('fb_payment_tool_activations', JSON.stringify(activations));
+                        updateActivationsList();
+                        
+                        // تحديث محتوى JSON
+                        updateJsonContent();
+                    }
+                });
+            });
+            
+            // تحديث محتوى JSON
+            updateJsonContent();
+        }
+        
+        // تحديث محتوى JSON
+        function updateJsonContent() {
+            document.getElementById('activation-json').value = JSON.stringify({
+                activations: activations
+            }, null, 2);
+        }
+        
+        // عرض رسائل النجاح
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+        
+        // تحميل الإعدادات المحفوظة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', loadSavedSettings);
+    </script>
+</body>
+</html>
