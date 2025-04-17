@@ -223,31 +223,107 @@
             showSuccessMessage('تم النسخ إلى الحافظة');
         }
         
-        // تحميل التفعيلات المحفوظة
-        function loadSavedActivations() {
-            let activations = localStorage.getItem('activations');
-            if (activations) {
-                try {
-                    return JSON.parse(activations);
-                } catch (e) {
-                    console.error('خطأ في تحميل التفعيلات:', e);
+        // الاتصال بالخادم لجلب التفعيلات
+        async function fetchActivations() {
+            try {
+                const response = await fetch('/api/activations');
+                if (!response.ok) {
+                    throw new Error('فشل في جلب التفعيلات');
                 }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب التفعيلات:', error);
+                return [];
             }
-            return [];
         }
         
-        // حفظ التفعيلات
-        function saveActivations(activations) {
-            localStorage.setItem('activations', JSON.stringify(activations));
-            showSuccessMessage('تم حفظ التفعيلات بنجاح!');
+        // إضافة أو تحديث تفعيل
+        async function saveActivation(hwid, serial) {
+            try {
+                const response = await fetch('/api/activations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ hwid, serial }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل في حفظ التفعيل');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('خطأ في حفظ التفعيل:', error);
+                alert('حدث خطأ أثناء حفظ التفعيل: ' + error.message);
+            }
+        }
+        
+        // حذف تفعيل
+        async function deleteActivationById(id) {
+            try {
+                const response = await fetch(`/api/activations/${id}`, {
+                    method: 'DELETE',
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل في حذف التفعيل');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('خطأ في حذف التفعيل:', error);
+                alert('حدث خطأ أثناء حذف التفعيل: ' + error.message);
+            }
+        }
+        
+        // مسح جميع التفعيلات
+        async function clearAllActivations() {
+            try {
+                const response = await fetch('/api/activations/clear', {
+                    method: 'POST',
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل في مسح التفعيلات');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('خطأ في مسح التفعيلات:', error);
+                alert('حدث خطأ أثناء مسح التفعيلات: ' + error.message);
+            }
+        }
+        
+        // استيراد التفعيلات
+        async function importActivationsData(data) {
+            try {
+                const response = await fetch('/api/import', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل في استيراد التفعيلات');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('خطأ في استيراد التفعيلات:', error);
+                alert('حدث خطأ أثناء استيراد التفعيلات: ' + error.message);
+            }
         }
         
         // تحديث قائمة التفعيلات
-        function updateActivationsList() {
+        async function updateActivationsList() {
             const activationsList = document.getElementById('activations-list');
             activationsList.innerHTML = '';
             
-            const activations = loadSavedActivations();
+            const activations = await fetchActivations();
             
             if (activations.length === 0) {
                 const emptyRow = document.createElement('tr');
@@ -256,7 +332,7 @@
                 return;
             }
             
-            activations.forEach((activation, index) => {
+            activations.forEach((activation) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${activation.hwid}</td>
@@ -264,7 +340,7 @@
                     <td>${activation.date}</td>
                     <td>
                         <button class="action-btn" onclick="copyActivationSerial('${activation.serial}')">نسخ الكود</button>
-                        <button class="action-btn btn-danger" onclick="deleteActivation(${index})">حذف</button>
+                        <button class="action-btn btn-danger" onclick="deleteActivation(${activation.id})">حذف</button>
                     </td>
                 `;
                 activationsList.appendChild(row);
@@ -272,8 +348,8 @@
         }
         
         // تحديث محتوى JSON
-        function updateJsonContent() {
-            const activations = loadSavedActivations();
+        async function updateJsonContent() {
+            const activations = await fetchActivations();
             document.getElementById('json-data').value = JSON.stringify(activations, null, 2);
         }
         
@@ -283,13 +359,12 @@
         }
         
         // حذف تفعيل
-        function deleteActivation(index) {
-            const activations = loadSavedActivations();
+        async function deleteActivation(id) {
             if (confirm('هل أنت متأكد من حذف هذا التفعيل؟')) {
-                activations.splice(index, 1);
-                saveActivations(activations);
-                updateActivationsList();
-                updateJsonContent();
+                await deleteActivationById(id);
+                await updateActivationsList();
+                await updateJsonContent();
+                showSuccessMessage('تم حذف التفعيل بنجاح');
             }
         }
         
@@ -301,7 +376,7 @@
         // إعداد أحداث النقر
         document.addEventListener('DOMContentLoaded', function() {
             // زر توليد كود التفعيل
-            document.getElementById('generate-btn').addEventListener('click', function() {
+            document.getElementById('generate-btn').addEventListener('click', async function() {
                 const hwid = document.getElementById('hwid').value.trim();
                 if (!hwid) {
                     alert('الرجاء إدخال معرف الجهاز أولًا!');
@@ -311,21 +386,10 @@
                 const serial = generateSerial(hwid);
                 document.getElementById('serial').value = serial;
                 
-                // إضافة التفعيل إلى القائمة
-                const activations = loadSavedActivations();
-                const now = new Date().toLocaleString();
-                
-                // التحقق مما إذا كان هذا المعرف موجود بالفعل
-                const existingIndex = activations.findIndex(a => a.hwid === hwid);
-                if (existingIndex >= 0) {
-                    activations[existingIndex] = { hwid, serial, date: now };
-                } else {
-                    activations.push({ hwid, serial, date: now });
-                }
-                
-                saveActivations(activations);
-                updateActivationsList();
-                updateJsonContent();
+                // حفظ التفعيل في قاعدة البيانات
+                await saveActivation(hwid, serial);
+                await updateActivationsList();
+                await updateJsonContent();
                 
                 // نسخ الكود تلقائيًا
                 copyToClipboard(serial);
@@ -333,18 +397,17 @@
             
             // زر حفظ التفعيلات
             document.getElementById('save-activations-btn').addEventListener('click', function() {
-                const activations = loadSavedActivations();
-                saveActivations(activations);
+                showSuccessMessage('التفعيلات محفوظة بالفعل في قاعدة البيانات');
             });
             
             // زر تصدير التفعيلات
-            document.getElementById('export-activations-btn').addEventListener('click', function() {
-                updateJsonContent();
+            document.getElementById('export-activations-btn').addEventListener('click', async function() {
+                await updateJsonContent();
                 copyToClipboard(document.getElementById('json-data').value);
             });
             
             // زر استيراد
-            document.getElementById('import-btn').addEventListener('click', function() {
+            document.getElementById('import-btn').addEventListener('click', async function() {
                 const jsonData = document.getElementById('json-data').value.trim();
                 if (!jsonData) {
                     alert('الرجاء إدخال بيانات JSON أولًا!');
@@ -354,8 +417,8 @@
                 try {
                     const importedActivations = JSON.parse(jsonData);
                     if (Array.isArray(importedActivations)) {
-                        saveActivations(importedActivations);
-                        updateActivationsList();
+                        await importActivationsData(importedActivations);
+                        await updateActivationsList();
                         showSuccessMessage('تم استيراد البيانات بنجاح!');
                     } else {
                         alert('تنسيق البيانات غير صحيح!');
@@ -366,11 +429,11 @@
             });
             
             // زر مسح جميع التفعيلات
-            document.getElementById('clear-all-btn').addEventListener('click', function() {
+            document.getElementById('clear-all-btn').addEventListener('click', async function() {
                 if (confirm('هل أنت متأكد من مسح جميع التفعيلات؟ لا يمكن التراجع عن هذا الإجراء!')) {
-                    saveActivations([]);
-                    updateActivationsList();
-                    updateJsonContent();
+                    await clearAllActivations();
+                    await updateActivationsList();
+                    await updateJsonContent();
                     showSuccessMessage('تم مسح جميع التفعيلات بنجاح!');
                 }
             });
