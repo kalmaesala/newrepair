@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة أداة إصلاح طرق الدفع في فيسبوك</title>
+    <title>أداة إصلاح طرق الدفع في فيسبوك</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,10 +30,89 @@
         h1 {
             color: #4267B2;
             font-size: 24px;
-            margin: 0;
+            margin-bottom: 20px;
             text-align: center;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
         }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f2f6;
+            border-radius: 4px 4px 0 0;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        .tab.active {
+            background-color: #4267B2;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .button {
+            flex: 1;
+            display: block;
+            background-color: #4267B2;
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #365899;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+        }
+        .bookmarklet-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .instructions {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .instructions ol {
+            margin-top: 15px;
+            padding-right: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        .bookmarklet {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4267B2;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        /* Admin panel styles */
         .card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -110,12 +189,6 @@
             padding: 5px 10px;
             font-size: 12px;
         }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #777;
-            font-size: 12px;
-        }
         .section {
             margin-bottom: 30px;
         }
@@ -124,63 +197,91 @@
 <body>
     <div class="container">
         <div class="religious-header">صلوا على رسول الله ﷺ</div>
-        <h1>لوحة إدارة أداة إصلاح طرق الدفع في فيسبوك</h1>
+        <h1>أداة إصلاح طرق الدفع في فيسبوك</h1>
         
-        <section class="section">
-            <div class="card">
-                <div class="card-title">إنشاء كود تفعيل جديد</div>
-                <div class="input-group">
-                    <label for="hwid">معرف الجهاز (Hardware ID):</label>
-                    <input type="text" id="hwid" placeholder="أدخل معرف الجهاز المرسل من المستخدم">
-                </div>
-                <div class="input-group">
-                    <label for="serial">كود التفعيل:</label>
-                    <input type="text" id="serial" readonly>
-                </div>
-                <div class="input-group">
-                    <button id="generate-btn" class="btn-success">توليد كود التفعيل</button>
-                </div>
-            </div>
-        </section>
+        <div class="tabs">
+            <div class="tab active" data-tab="user">المستخدم</div>
+            <div class="tab" data-tab="admin">لوحة الإدارة</div>
+        </div>
         
-        <section class="section">
-            <div class="card">
-                <div class="card-title">تفعيلات محفوظة</div>
-                <div id="activations-container">
-                    <table id="activations-table">
-                        <thead>
-                            <tr>
-                                <th>معرف الجهاز</th>
-                                <th>كود التفعيل</th>
-                                <th>تاريخ التفعيل</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activations-list">
-                            <!-- هنا ستظهر قائمة التفعيلات المحفوظة -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="input-group" style="margin-top: 15px;">
-                    <button id="save-activations-btn">حفظ التفعيلات</button>
-                    <button id="export-activations-btn" style="margin-right: 10px;">تصدير التفعيلات JSON</button>
-                </div>
+        <!-- User Tab -->
+        <div class="tab-content active" id="user-tab">
+            <div class="instructions">
+                <h3>تعليمات الاستخدام:</h3>
+                <ol>
+                    <li>قم بسحب زر "Amex Repair Tool" أدناه إلى شريط المفضلة (Bookmarks Bar) في متصفحك.</li>
+                    <li>انتقل إلى صفحة إدارة طرق الدفع في فيسبوك.</li>
+                    <li>اضغط على الزر المحفوظ في شريط المفضلة لتشغيل الأداة.</li>
+                    <li>عند الاستخدام لأول مرة، ستظهر شاشة التفعيل لنسخ معرف جهازك وإرساله للمسؤول.</li>
+                    <li>بعد الحصول على كود التفعيل، أدخله في الشاشة وستبدأ الأداة تلقائياً.</li>
+                </ol>
             </div>
-        </section>
+            
+            <div class="bookmarklet-container">
+                <p>اسحب هذا الزر إلى شريط المفضلة في المتصفح:</p>
+                <a href="javascript:(function(){var s=document.createElement('script');s.type='text/javascript';s.src='https://YOURDOMAIN.github.io/bookmarklet.js?v='+Date.now();document.body.appendChild(s);})();" class="bookmarklet">Amex Repair Tool ❤️</a>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">ملاحظة: إذا كان شريط المفضلة غير ظاهر في متصفحك، اضغط Ctrl+Shift+B (Windows) أو Command+Shift+B (Mac) لإظهاره.</p>
+            </div>
+        </div>
         
-        <section class="section">
-            <div class="card">
-                <div class="card-title">استيراد/تصدير البيانات</div>
-                <div class="input-group">
-                    <label for="json-data">نص JSON للتفعيلات:</label>
-                    <textarea id="json-data" placeholder="لصق بيانات JSON هنا لاستيرادها"></textarea>
+        <!-- Admin Tab -->
+        <div class="tab-content" id="admin-tab">
+            <section class="section">
+                <div class="card">
+                    <div class="card-title">إنشاء كود تفعيل جديد</div>
+                    <div class="input-group">
+                        <label for="hwid">معرف الجهاز (Hardware ID):</label>
+                        <input type="text" id="hwid" placeholder="أدخل معرف الجهاز المرسل من المستخدم">
+                    </div>
+                    <div class="input-group">
+                        <label for="serial">كود التفعيل:</label>
+                        <input type="text" id="serial" readonly>
+                    </div>
+                    <div class="input-group">
+                        <button id="generate-btn" class="btn-success">توليد كود التفعيل</button>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <button id="import-btn">استيراد</button>
-                    <button id="clear-all-btn" class="btn-danger" style="margin-right: 10px;">مسح جميع التفعيلات</button>
+            </section>
+            
+            <section class="section">
+                <div class="card">
+                    <div class="card-title">تفعيلات محفوظة</div>
+                    <div id="activations-container">
+                        <table id="activations-table">
+                            <thead>
+                                <tr>
+                                    <th>معرف الجهاز</th>
+                                    <th>كود التفعيل</th>
+                                    <th>تاريخ التفعيل</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activations-list">
+                                <!-- هنا ستظهر قائمة التفعيلات المحفوظة -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <button id="save-activations-btn">حفظ التفعيلات</button>
+                        <button id="export-activations-btn" style="margin-right: 10px;">تصدير التفعيلات JSON</button>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+            
+            <section class="section">
+                <div class="card">
+                    <div class="card-title">استيراد/تصدير البيانات</div>
+                    <div class="input-group">
+                        <label for="json-data">نص JSON للتفعيلات:</label>
+                        <textarea id="json-data" placeholder="لصق بيانات JSON هنا لاستيرادها"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <button id="import-btn">استيراد</button>
+                        <button id="clear-all-btn" class="btn-danger" style="margin-right: 10px;">مسح جميع التفعيلات</button>
+                    </div>
+                </div>
+            </section>
+        </div>
         
         <div class="footer">
             © Copyright by AboKarMa & KarLa
@@ -188,6 +289,44 @@
     </div>
     
     <script>
+        // تبديل التبويبات
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // إزالة الفئة النشطة من جميع التبويبات
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // إضافة الفئة النشطة إلى التبويب المحدد
+                    this.classList.add('active');
+                    
+                    // إخفاء جميع محتويات التبويبات
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // إظهار محتوى التبويب المحدد
+                    const tabId = this.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // تحديث قائمة التفعيلات إذا كان التبويب هو الإدارة
+                    if (this.getAttribute('data-tab') === 'admin') {
+                        updateActivationsList();
+                        updateJsonContent();
+                    }
+                });
+            });
+            
+            // تحديث رابط البوكماركليت ليشير للموقع الحالي
+            const host = window.location.hostname;
+            const bookmarkletLink = document.querySelector('.bookmarklet');
+            
+            if (bookmarkletLink) {
+                const href = bookmarkletLink.getAttribute('href');
+                const updatedHref = href.replace('YOURDOMAIN.github.io', host);
+                bookmarkletLink.setAttribute('href', updatedHref);
+            }
+        });
+        
         // دالة لتوليد كود تفعيل من معرف الجهاز
         function generateSerial(hwid) {
             if (!hwid || hwid.length < 8) {
@@ -223,107 +362,33 @@
             showSuccessMessage('تم النسخ إلى الحافظة');
         }
         
-        // الاتصال بالخادم لجلب التفعيلات
-        async function fetchActivations() {
-            try {
-                const response = await fetch('/api/activations');
-                if (!response.ok) {
-                    throw new Error('فشل في جلب التفعيلات');
+        // تحميل التفعيلات المحفوظة
+        function loadSavedActivations() {
+            let activations = localStorage.getItem('activations');
+            if (activations) {
+                try {
+                    return JSON.parse(activations);
+                } catch (e) {
+                    console.error('خطأ في تحميل التفعيلات:', e);
                 }
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('خطأ في جلب التفعيلات:', error);
-                return [];
             }
+            return [];
         }
         
-        // إضافة أو تحديث تفعيل
-        async function saveActivation(hwid, serial) {
-            try {
-                const response = await fetch('/api/activations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ hwid, serial }),
-                });
-                
-                if (!response.ok) {
-                    throw new Error('فشل في حفظ التفعيل');
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('خطأ في حفظ التفعيل:', error);
-                alert('حدث خطأ أثناء حفظ التفعيل: ' + error.message);
-            }
-        }
-        
-        // حذف تفعيل
-        async function deleteActivationById(id) {
-            try {
-                const response = await fetch(`/api/activations/${id}`, {
-                    method: 'DELETE',
-                });
-                
-                if (!response.ok) {
-                    throw new Error('فشل في حذف التفعيل');
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('خطأ في حذف التفعيل:', error);
-                alert('حدث خطأ أثناء حذف التفعيل: ' + error.message);
-            }
-        }
-        
-        // مسح جميع التفعيلات
-        async function clearAllActivations() {
-            try {
-                const response = await fetch('/api/activations/clear', {
-                    method: 'POST',
-                });
-                
-                if (!response.ok) {
-                    throw new Error('فشل في مسح التفعيلات');
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('خطأ في مسح التفعيلات:', error);
-                alert('حدث خطأ أثناء مسح التفعيلات: ' + error.message);
-            }
-        }
-        
-        // استيراد التفعيلات
-        async function importActivationsData(data) {
-            try {
-                const response = await fetch('/api/import', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                });
-                
-                if (!response.ok) {
-                    throw new Error('فشل في استيراد التفعيلات');
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('خطأ في استيراد التفعيلات:', error);
-                alert('حدث خطأ أثناء استيراد التفعيلات: ' + error.message);
-            }
+        // حفظ التفعيلات
+        function saveActivations(activations) {
+            localStorage.setItem('activations', JSON.stringify(activations));
+            showSuccessMessage('تم حفظ التفعيلات بنجاح!');
         }
         
         // تحديث قائمة التفعيلات
-        async function updateActivationsList() {
+        function updateActivationsList() {
             const activationsList = document.getElementById('activations-list');
+            if (!activationsList) return;
+            
             activationsList.innerHTML = '';
             
-            const activations = await fetchActivations();
+            const activations = loadSavedActivations();
             
             if (activations.length === 0) {
                 const emptyRow = document.createElement('tr');
@@ -332,7 +397,7 @@
                 return;
             }
             
-            activations.forEach((activation) => {
+            activations.forEach((activation, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${activation.hwid}</td>
@@ -340,7 +405,7 @@
                     <td>${activation.date}</td>
                     <td>
                         <button class="action-btn" onclick="copyActivationSerial('${activation.serial}')">نسخ الكود</button>
-                        <button class="action-btn btn-danger" onclick="deleteActivation(${activation.id})">حذف</button>
+                        <button class="action-btn btn-danger" onclick="deleteActivation(${index})">حذف</button>
                     </td>
                 `;
                 activationsList.appendChild(row);
@@ -348,9 +413,12 @@
         }
         
         // تحديث محتوى JSON
-        async function updateJsonContent() {
-            const activations = await fetchActivations();
-            document.getElementById('json-data').value = JSON.stringify(activations, null, 2);
+        function updateJsonContent() {
+            const jsonDataElement = document.getElementById('json-data');
+            if (!jsonDataElement) return;
+            
+            const activations = loadSavedActivations();
+            jsonDataElement.value = JSON.stringify(activations, null, 2);
         }
         
         // نسخ كود التفعيل
@@ -359,12 +427,13 @@
         }
         
         // حذف تفعيل
-        async function deleteActivation(id) {
+        function deleteActivation(index) {
+            const activations = loadSavedActivations();
             if (confirm('هل أنت متأكد من حذف هذا التفعيل؟')) {
-                await deleteActivationById(id);
-                await updateActivationsList();
-                await updateJsonContent();
-                showSuccessMessage('تم حذف التفعيل بنجاح');
+                activations.splice(index, 1);
+                saveActivations(activations);
+                updateActivationsList();
+                updateJsonContent();
             }
         }
         
@@ -376,71 +445,95 @@
         // إعداد أحداث النقر
         document.addEventListener('DOMContentLoaded', function() {
             // زر توليد كود التفعيل
-            document.getElementById('generate-btn').addEventListener('click', async function() {
-                const hwid = document.getElementById('hwid').value.trim();
-                if (!hwid) {
-                    alert('الرجاء إدخال معرف الجهاز أولًا!');
-                    return;
-                }
-                
-                const serial = generateSerial(hwid);
-                document.getElementById('serial').value = serial;
-                
-                // حفظ التفعيل في قاعدة البيانات
-                await saveActivation(hwid, serial);
-                await updateActivationsList();
-                await updateJsonContent();
-                
-                // نسخ الكود تلقائيًا
-                copyToClipboard(serial);
-            });
+            const generateBtn = document.getElementById('generate-btn');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', function() {
+                    const hwid = document.getElementById('hwid').value.trim();
+                    if (!hwid) {
+                        alert('الرجاء إدخال معرف الجهاز أولًا!');
+                        return;
+                    }
+                    
+                    const serial = generateSerial(hwid);
+                    document.getElementById('serial').value = serial;
+                    
+                    // إضافة التفعيل إلى القائمة
+                    const activations = loadSavedActivations();
+                    const now = new Date().toLocaleString();
+                    
+                    // التحقق مما إذا كان هذا المعرف موجود بالفعل
+                    const existingIndex = activations.findIndex(a => a.hwid === hwid);
+                    if (existingIndex >= 0) {
+                        activations[existingIndex] = { hwid, serial, date: now };
+                    } else {
+                        activations.push({ hwid, serial, date: now });
+                    }
+                    
+                    saveActivations(activations);
+                    updateActivationsList();
+                    updateJsonContent();
+                    
+                    // نسخ الكود تلقائيًا
+                    copyToClipboard(serial);
+                });
+            }
             
             // زر حفظ التفعيلات
-            document.getElementById('save-activations-btn').addEventListener('click', function() {
-                showSuccessMessage('التفعيلات محفوظة بالفعل في قاعدة البيانات');
-            });
+            const saveActivationsBtn = document.getElementById('save-activations-btn');
+            if (saveActivationsBtn) {
+                saveActivationsBtn.addEventListener('click', function() {
+                    const activations = loadSavedActivations();
+                    saveActivations(activations);
+                });
+            }
             
             // زر تصدير التفعيلات
-            document.getElementById('export-activations-btn').addEventListener('click', async function() {
-                await updateJsonContent();
-                copyToClipboard(document.getElementById('json-data').value);
-            });
+            const exportActivationsBtn = document.getElementById('export-activations-btn');
+            if (exportActivationsBtn) {
+                exportActivationsBtn.addEventListener('click', function() {
+                    updateJsonContent();
+                    const jsonData = document.getElementById('json-data').value;
+                    copyToClipboard(jsonData);
+                });
+            }
             
             // زر استيراد
-            document.getElementById('import-btn').addEventListener('click', async function() {
-                const jsonData = document.getElementById('json-data').value.trim();
-                if (!jsonData) {
-                    alert('الرجاء إدخال بيانات JSON أولًا!');
-                    return;
-                }
-                
-                try {
-                    const importedActivations = JSON.parse(jsonData);
-                    if (Array.isArray(importedActivations)) {
-                        await importActivationsData(importedActivations);
-                        await updateActivationsList();
-                        showSuccessMessage('تم استيراد البيانات بنجاح!');
-                    } else {
-                        alert('تنسيق البيانات غير صحيح!');
+            const importBtn = document.getElementById('import-btn');
+            if (importBtn) {
+                importBtn.addEventListener('click', function() {
+                    const jsonData = document.getElementById('json-data').value.trim();
+                    if (!jsonData) {
+                        alert('الرجاء إدخال بيانات JSON أولًا!');
+                        return;
                     }
-                } catch (e) {
-                    alert('خطأ في تحليل بيانات JSON: ' + e.message);
-                }
-            });
+                    
+                    try {
+                        const importedActivations = JSON.parse(jsonData);
+                        if (Array.isArray(importedActivations)) {
+                            saveActivations(importedActivations);
+                            updateActivationsList();
+                            showSuccessMessage('تم استيراد البيانات بنجاح!');
+                        } else {
+                            alert('تنسيق البيانات غير صحيح!');
+                        }
+                    } catch (e) {
+                        alert('خطأ في تحليل بيانات JSON: ' + e.message);
+                    }
+                });
+            }
             
             // زر مسح جميع التفعيلات
-            document.getElementById('clear-all-btn').addEventListener('click', async function() {
-                if (confirm('هل أنت متأكد من مسح جميع التفعيلات؟ لا يمكن التراجع عن هذا الإجراء!')) {
-                    await clearAllActivations();
-                    await updateActivationsList();
-                    await updateJsonContent();
-                    showSuccessMessage('تم مسح جميع التفعيلات بنجاح!');
-                }
-            });
-            
-            // تحميل البيانات عند تحميل الصفحة
-            updateActivationsList();
-            updateJsonContent();
+            const clearAllBtn = document.getElementById('clear-all-btn');
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', function() {
+                    if (confirm('هل أنت متأكد من مسح جميع التفعيلات؟ لا يمكن التراجع عن هذا الإجراء!')) {
+                        saveActivations([]);
+                        updateActivationsList();
+                        updateJsonContent();
+                        showSuccessMessage('تم مسح جميع التفعيلات بنجاح!');
+                    }
+                });
+            }
         });
     </script>
 </body>
